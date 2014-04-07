@@ -1,0 +1,9 @@
+*.pyc
+*~
+.#*
+*.egg-info
+.ropeproject
+build
+dist
+MANIFEST
+docs/_build
