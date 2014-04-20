@@ -1,11 +1,8 @@
-import os
 import unittest2 as unittest
 import numpy as np
 
 from andreasmusic import audio
 from andreasmusic import spectrum
-
-from util import rel_path
 
 class TestSpectrum(unittest.TestCase):
 
