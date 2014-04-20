@@ -21,7 +21,7 @@ def read(filename):
 
 def _read_mpX(filename):
     with util.temporary_filename('.wav') as wav_filename:
-        subprocess.check_call(['ffmpeg', '-i', filename, wav_filename])
+        subprocess.check_output(['ffmpeg', '-i', filename, wav_filename], stderr=subprocess.STDOUT)
         return _read_wav(wav_filename)
 
 def _read_wav(filename):

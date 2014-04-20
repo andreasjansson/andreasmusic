@@ -1,8 +1,12 @@
 import unittest2 as unittest
 import numpy as np
 
+from andreasmusic import audio
+from andreasmusic import spectrum
 from andreasmusic import chroma
 from andreasmusic import pitches
+
+from util import rel_path
 
 class TestChroma(unittest.TestCase):
 
@@ -66,3 +70,11 @@ class TestChroma(unittest.TestCase):
                                == np.array([0, 0, 0, 1, 1, 1])))
         self.assertTrue(np.all(chroma._get_tuning_indices(2, 3, 2)
                                == np.array([0, 1, 1, 1, 0, 0])))
+
+    def test_monophonic_audio(self):
+        filename = rel_path('data/audio/rate44100-bits16-channels1-freq440-duration1.mp3')
+        a = audio.read(filename)
+        s = spectrum.get_spectrogram(a, 2000, 1000)
+        c = chroma.get_chromagram(s, a.sample_rate)
+        for i in xrange(c.shape[1]):
+            self.assertEquals(np.argmax(c[:, i]), 9)
