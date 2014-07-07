@@ -27,12 +27,16 @@ ENHARMONIC_EQUIVALENTS = {
     'C' : 'B#',
 }
 
+MIDI_FREQS = {}
+
 def _setup():
     for octave in range(0, 7):
         for i, note_name in enumerate(NOTE_NAMES):
-            dist_from_a = (octave - 4) * 12 + i - 9
+            dist_from_a = (octave - 3) * 12 + i - 9
             fq = 440 * np.power(2, dist_from_a / 12.0)
             midi_pitch = (octave + 1) * 12 + i
+
+            MIDI_FREQS[midi_pitch] = fq
 
             note_names = [note_name]
             if note_name in ENHARMONIC_EQUIVALENTS:
@@ -43,6 +47,22 @@ def _setup():
                 name = '%s%d' % (n, octave)
                 note = Note(name, fq, midi_pitch)
                 setattr(sys.modules[__name__], name.replace('#', '_'), note)
-                
-
 _setup()
+
+
+class UnknownNote(Exception): pass
+
+def note_number(note_name):
+    if note_name in NOTE_NAMES:
+        return NOTE_NAMES.index(note_name)
+    elif note_name in ENHARMONIC_EQUIVALENTS:
+        return NOTE_NAMES.index(ENHARMONIC_EQUIVALENTS[note_name])
+    raise UnknownNote(note_name)
+
+def note_name(note_number):
+    if note_number < 0 or note_number >= len(NOTE_NAMES):
+        raise UnknownNote(note_number)
+    return NOTE_NAMES[note_number]
+
+def freq_for_pitch(pitch):
+    return MIDI_FREQS[pitch]
