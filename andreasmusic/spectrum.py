@@ -7,8 +7,10 @@ from scipy.signal import argrelmax, medfilt, medfilt2d
 from scipy.cluster.vq import kmeans, vq
 
 from andreasmusic import util
-from andreasmusic import harmonic_midi
 from andreasmusic import pitches as apitches
+
+MIN_PITCH = 12 * 3
+MAX_PITCH = 12 * 7
 
 def get_spectrogram(audio, window_size, hop_size, window_function=np.hanning, return_angles=False):
     if audio.signal.shape[1] != 1:
@@ -105,7 +107,7 @@ def overtones_to_spectrogram(overtones, sample_rate, window_size, gaussian_width
     spectrogram = np.zeros((len(overtones), int(halfwin)))
 
     for i in xrange(n_pitches):
-        pitch = i + harmonic_midi.MIN_PITCH
+        pitch = i + MIN_PITCH
         freq = apitches.C0.fq * 2 ** (pitch / 12.0)
         index = np.round(halfwin * freq / (sample_rate / 2))
 
@@ -124,7 +126,7 @@ def spectrogram_to_overtones(spectrogram, sample_rate, window_size, harmonics=16
     def f(x):
         return np.exp(-(np.linspace(-x, 1-x, halfwin) / (x * gaussian_width)) ** 2)
 
-    pitches = range(harmonic_midi.MIN_PITCH, harmonic_midi.MAX_PITCH)
+    pitches = range(MIN_PITCH, MAX_PITCH)
 
     overtones = np.zeros((len(spectrogram), len(pitches), harmonics))
 
