@@ -60,9 +60,11 @@ def note_number(note_name):
     raise UnknownNote(note_name)
 
 def note_name(note_number):
-    if note_number < 0 or note_number >= len(NOTE_NAMES):
+    if note_number < 0:
         raise UnknownNote(note_number)
-    return NOTE_NAMES[note_number]
+    name = NOTE_NAMES[note_number % 12]
+    octave = int(note_number / 12)
+    return '%s%d' % (name, octave)
 
-def freq_for_pitch(pitch):
+def pitch_to_freq(pitch):
     return MIDI_FREQS[pitch]
